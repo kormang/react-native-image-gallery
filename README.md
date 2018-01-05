@@ -19,7 +19,7 @@ This component aims to be the best image viewer for React Native apps, it is far
 * Gesture handling - other than the common pan, pinch and doubleTap gestures, this component also performs efficiently when targeting focus point (also known as pivot) on zoom-in and zoom-out.
 * Responder switch - the gesture responder switch is far more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
-This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
+This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image.
 
 This component works on react-native **0.28+**.
 
@@ -70,6 +70,8 @@ Prop | Description | Type | Default
 `pageMargin` | Blank space to show between images | `number` | `0`
 `onPageSelected` | Fired with the index of page that has been selected | `function`
 `onPageScrollStateChanged` | Called when page scrolling state has changed, see [scroll state and events](#scroll-state-and-events) | `function`
+`onResponderMove` | Fired with gestureState and current page scale level, when user starts to move slide | `function`
+`onResponderRelease` | Fired with the gestureState, when user releases | `function`
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
 `scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
@@ -77,9 +79,9 @@ Prop | Description | Type | Default
 
 ## Scroll state and events
 
-* `onPageScroll` : (event) => {}. 
+* `onPageScroll` : (event) => {}.
 
-  The event object carries following data: 
+  The event object carries following data:
 
   * `position`:  index of first page from the left that is currently visible.
   * `offset`: value from range [0,1) describing stage between page transitions.

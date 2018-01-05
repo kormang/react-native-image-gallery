@@ -19,6 +19,8 @@ export default class Gallery extends PureComponent {
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func,
+        onResponderRelease: PropTypes.func,
+        onResponderMove: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onGalleryStateChanged: PropTypes.func,
         onLongPress: PropTypes.func,
@@ -32,10 +34,13 @@ export default class Gallery extends PureComponent {
         removeClippedSubviews: true,
         imageComponent: undefined,
         scrollViewStyle: {},
-        flatListProps: DEFAULT_FLAT_LIST_PROPS
+        flatListProps: DEFAULT_FLAT_LIST_PROPS,
+        onResponderMove: () => {},
+        onResponderRelease: () => {}
     };
 
     imageRefs = new Map();
+    imageScales = new Map();
     activeResponder = undefined;
     firstMove = true;
     currentPage = 0;
@@ -57,6 +62,7 @@ export default class Gallery extends PureComponent {
 
     componentWillMount () {
         let onResponderReleaseOrTerminate = (evt, gestureState) => {
+            this.props.onResponderRelease()
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&
                     !this.shouldScrollViewPager(evt, gestureState) &&
@@ -77,6 +83,7 @@ export default class Gallery extends PureComponent {
             onStartShouldSetResponder: (evt, gestureState) => true,
             onResponderGrant: this.activeImageResponder,
             onResponderMove: (evt, gestureState) => {
+                this.props.onResponderMove(gestureState, this.imageScales.get(this.currentPage))
                 if (this.firstMove) {
                     this.firstMove = false;
                     if (this.shouldScrollViewPager(evt, gestureState)) {
@@ -195,6 +202,10 @@ export default class Gallery extends PureComponent {
         }
     }
 
+    setImageScale = (transform, id) => {
+        this.imageScales.set(id, transform.scale)
+    }
+
     getImageTransformer (page) {
         if (page >= 0 && page < this.pageCount) {
             let ref = this.imageRefs.get(page);
@@ -229,6 +240,7 @@ export default class Gallery extends PureComponent {
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
+                  this.setImageScale(transform, pageId)
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
               onTransformGestureReleased={((transform) => {
